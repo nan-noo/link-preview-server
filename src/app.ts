@@ -16,6 +16,7 @@ const app = express();
 app.use(
   cors({
     origin: true,
+    credentials: true,
   }),
 );
 app.use(express.json());
@@ -28,7 +29,7 @@ const getLinkHtml = async (linkUrl: string) => {
 
 app.get('/api/link-preview', async (req: TypedRequestQuery<GetLinkPreviewRequestParams>, res) => {
   const { linkUrl } = req.query;
-  if (!linkUrl) {
+  if (!linkUrl || typeof linkUrl !== 'string' || linkUrl.length === 0) {
     console.error('linkUrl이 없음!');
     return res.status(400).json({ message: 'no reqest data(url)' });
   }

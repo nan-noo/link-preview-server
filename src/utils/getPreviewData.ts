@@ -41,7 +41,7 @@ const previewAttributes: Array<Attributes> = [
 ];
 
 const getPreviewData = (data: HtmlString) => {
-  const pureData = data.replace(/[\r\n]/gm, '');
+  const pureData = data.replace(/[\r\n\t]/gm, '');
   const { title, metaTags } = parseHtml(pureData);
 
   const defaultMetaContents: Record<AttributeName, string | null> = {
