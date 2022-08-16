@@ -8,24 +8,23 @@ type Attributes = {
 };
 
 const getMatchedTags = (htmlString: HtmlString, tagName: TagName) => {
-  const matchedIterator = htmlString.matchAll(new RegExp(`<${tagName}(.*?)>`, 'g'));
+  const matchedIterator = htmlString.matchAll(new RegExp(`<${tagName}.*?>`, 'g'));
   const matchedArray = [...matchedIterator];
 
   return matchedArray.map(matched => matched[0]);
 };
 
 const getTagInnerContent = (htmlString: HtmlString, tagName: TagName) => {
-  const postFixIncluded = htmlString
-    .split(new RegExp(`(<${tagName}>)|(<${tagName}(\s.*?)>)`))
-    .slice(1)
-    .join('');
+  const splitBytagPrefixRegExp = new RegExp(`<${tagName}>|<${tagName}\\s.+?>`);
 
-  const innerContent = postFixIncluded.split(`</${tagName}>`)[0];
+  const postfixIncluded = htmlString.split(splitBytagPrefixRegExp)[1];
+  const innerContent = postfixIncluded.split(`</${tagName}>`)[0];
   return innerContent;
 };
 
 const parseHtml = (data: HtmlString) => {
   const headHtmlString = getTagInnerContent(data, 'head');
+
   const title = getTagInnerContent(headHtmlString, 'title');
   const metaTags = getMatchedTags(headHtmlString, 'meta');
 
