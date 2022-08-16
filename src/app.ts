@@ -5,6 +5,8 @@ import axios from 'axios';
 import type { Query } from 'express-serve-static-core';
 import getPreviewData from './utils/getPreviewData';
 
+const shell = require('shelljs');
+
 export interface TypedRequestQuery<T extends Query> extends Express.Request {
   query: T;
 }
@@ -27,11 +29,24 @@ const getLinkHtml = async (linkUrl: string) => {
   return response.data;
 };
 
+app.get('/npm-run-build/:mode', (req, res) => {
+  const mode = req.params.mode;
+  if (mode === 'dev') {
+    shell.exec('bash deploy-dev.sh');
+    res.send('빌드 성공 - dev');
+  } else if (mode === 'prod') {
+    shell.exec('bash deploy-prod.sh');
+    res.send('빌드 성공 - prod');
+  } else {
+    res.send(`ERROR : 잘못된 Mode입니다 ${mode}`);
+  }
+});
+
 app.get('/api/link-preview', async (req: TypedRequestQuery<GetLinkPreviewRequestParams>, res) => {
   const { linkUrl } = req.query;
   if (!linkUrl || typeof linkUrl !== 'string' || linkUrl.length === 0) {
     console.error('linkUrl이 없음!');
-    return res.status(400).json({ message: 'no reqest data(url)' });
+    return res.status(400).json({ message: 'no request data(url)' });
   }
 
   try {
