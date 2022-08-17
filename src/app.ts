@@ -5,7 +5,7 @@ import axios from 'axios';
 import type { Query } from 'express-serve-static-core';
 import getPreviewData from './utils/getPreviewData';
 
-const shell = require('shelljs');
+import shell from 'shelljs';
 
 export interface TypedRequestQuery<T extends Query> extends Express.Request {
   query: T;
