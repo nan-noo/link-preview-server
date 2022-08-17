@@ -1,11 +1,10 @@
 import express from 'express';
 import cors from 'cors';
 import axios from 'axios';
+import shell from 'shelljs';
 
 import type { Query } from 'express-serve-static-core';
 import getPreviewData from './utils/getPreviewData';
-
-import shell from 'shelljs';
 
 export interface TypedRequestQuery<T extends Query> extends Express.Request {
   query: T;
@@ -32,10 +31,11 @@ const getLinkHtml = async (linkUrl: string) => {
 app.get('/npm-run-build/:mode', (req, res) => {
   const mode = req.params.mode;
   if (mode === 'dev') {
-    shell.exec('bash deploy-dev.sh');
+    shell.echo('dev deploy start');
+    shell.exec('bash ./src/deploy-dev.sh');
     res.send('빌드 성공 - dev');
   } else if (mode === 'prod') {
-    shell.exec('bash deploy-prod.sh');
+    shell.exec('bash ./src/deploy-prod.sh');
     res.send('빌드 성공 - prod');
   } else {
     res.send(`ERROR : 잘못된 Mode입니다 ${mode}`);
